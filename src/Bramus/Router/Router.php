@@ -376,8 +376,24 @@ class Router
     private function invoke($fn, $params = array()) {
         if (is_callable($fn)) {
             call_user_func_array($fn, $params);
-        } // If not, check the existence of special parameters
-        elseif (stripos($fn, '@') !== false) {
+        }// If not, check if is array and counts 2, then we know it's the controller/method names and params
+        elseif (is_array($fn) && count($fn) === 2) {
+            list($controllers, $methods) = $fn;
+            $controllers = (array) $controllers;
+            $methods = (array) $methods;
+            $controller = $controllers[0];
+            if ($this->getNamespace() !== '') {
+                $controller = $this->getNamespace() . '\\' . $controller;
+            }
+            array_shift($controllers);
+            $method = $methods[0];
+            array_shift($methods);
+            call_user_func_array(
+                [new $controller(...$controllers), $method],
+                array_merge($params, $methods)
+            );
+        }// If not, check the existence of special parameters
+        elseif (is_string($fn) && stripos($fn, '@') !== false) {
             // Explode segments of given route
             list($controller, $method) = explode('@', $fn);
             // Adjust controller class if namespace has been set
