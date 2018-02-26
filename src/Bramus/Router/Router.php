@@ -417,7 +417,7 @@ class Router
      *
      * @return string
      */
-    protected function getCurrentUri()
+    public function getCurrentUri()
     {
         // Get the current Request URI and remove rewrite base path from it (= allows one to run the router in a sub folder)
         $uri = substr($_SERVER['REQUEST_URI'], strlen($this->getBasePath()));
