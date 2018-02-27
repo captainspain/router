@@ -51,20 +51,22 @@ class Router
     /**
      * Store a before middleware route and a handling function to be executed when accessed using one of the specified methods.
      *
-     * @param string          $methods Allowed methods, | delimited
-     * @param string          $pattern A route pattern such as /about/system
-     * @param object|callable $fn      The handling function to be executed
+     * @param string                $methods Allowed methods, | delimited
+     * @param string|array          $patterns A route pattern such as /about/system
+     * @param object|callable $fn   The handling function to be executed
      */
-    public function before($methods, $pattern, $fn)
+    public function before($methods, $patterns, $fn)
     {
-        $pattern = $this->baseRoute.'/'.trim($pattern, '/');
-        $pattern = $this->baseRoute ? rtrim($pattern, '/') : $pattern;
+        foreach ((array) $patterns as $pattern) {
+            $pattern = $this->baseRoute.'/'.trim($pattern, '/');
+            $pattern = $this->baseRoute ? rtrim($pattern, '/') : $pattern;
 
-        foreach (explode('|', $methods) as $method) {
-            $this->beforeRoutes[$method][] = array(
-                'pattern' => $pattern,
-                'fn' => $fn,
-            );
+            foreach (explode('|', $methods) as $method) {
+                $this->beforeRoutes[$method][] = array(
+                    'pattern' => $pattern,
+                    'fn' => $fn,
+                );
+            }
         }
     }
 
