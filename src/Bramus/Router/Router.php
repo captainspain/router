@@ -445,4 +445,12 @@ class Router
 
         return $this->serverBasePath;
     }
+    
+    public function redirect($path = '')
+    {
+        $url = $this->getRequestHeaders()['Host'] . $this->getBasePath() . ltrim($path, '/');
+
+        header("location: {$url}");
+        exit();
+    }
 }
